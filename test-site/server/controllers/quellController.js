@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const { graphql } = require('graphql');
 const redis = require('redis');
 
