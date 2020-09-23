@@ -1,17 +1,21 @@
+/* eslint-disable react/button-has-type */
+/* eslint-disable react/prop-types */
 import React from 'react';
 
-/* 
+/*
   A reusable component for all buttons in the demo
 */
 
 const DemoButton = (props) => {
   const { func, classname, text } = props;
-  return(
-    <button 
+  return (
+    <button
       className={classname}
       onClick={func}
-    >{text}</button>
-  )
-}
+    >
+      {text}
+    </button>
+  );
+};
 
 export default DemoButton;

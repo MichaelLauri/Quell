@@ -1,3 +1,7 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable guard-for-in */
+/* eslint-disable no-shadow */
+/* eslint-disable no-unused-vars */
 const { parse } = require('graphql/language/parser');
 const { visit } = require('graphql/language/visitor');
 const parseAST = require('./parseAST');
@@ -15,26 +19,26 @@ const joinResponses = require('./joinResponses');
 async function Quellify(endPoint, query, map, fieldsMap) {
   // Create AST of query
   const AST = parse(query);
-  // Create object of "true" values from AST tree (w/ some eventually updated to "false" via buildItem())
+  // Create object of "true" values from AST tree
+  // (w/ some eventually updated to "false" via buildItem())
   const proto = parseAST(AST);
   // Copy of proto object to pass into joinResponses():
   let joinProto;
-  for (let query in proto) {
+  for (const query in proto) {
     joinProto = { ...proto[query] };
   }
 
   // Check cache for data and build array from that cached data
-  const responseFromCache = buildArray(proto, map) // returns e.g. [{name: 'Bobby'}, {id: '2'}]
+  const responseFromCache = buildArray(proto, map); // returns e.g. [{name: 'Bobby'}, {id: '2'}]
 
   // If no data in cache, the response array will be empty:
   if (responseFromCache.length === 0) {
-
     const fetchOptions = {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ query: query })
+      body: JSON.stringify({ query }),
     };
 
     // Execute fetch request with original query
@@ -54,26 +58,25 @@ async function Quellify(endPoint, query, map, fieldsMap) {
 
   // Partial data in cache:  (i.e. keys in queryObject will exist)
   if (Object.keys(queryObject).length > 0) {
-
-    const newQuery = createQueryStr(queryObject); // Create formal GQL query string from query object
+    // Create formal GQL query string from query object
+    const newQuery = createQueryStr(queryObject);
     const fetchOptions = {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ query: newQuery })
+      body: JSON.stringify({ query: newQuery }),
     };
 
     // Execute fetch request with new query
     const responseFromFetch = await fetch(endPoint, fetchOptions);
     const parsedData = await responseFromFetch.json();
 
-
     // Stitch together cached response and the newly fetched data and assign to variable
     mergedResponse = joinResponses(responseFromCache, parsedData.data[queryName], joinProto);
-
   } else {
-    mergedResponse = responseFromCache; // If everything needed was already in cache, only assign cached response to variable
+    // If everything needed was already in cache, only assign cached response to variable
+    mergedResponse = responseFromCache;
   }
 
   const formattedMergedResponse = { data: { [queryName]: mergedResponse } };

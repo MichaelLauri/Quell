@@ -1,8 +1,9 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 
 const QueryResults = (props) => {
   const { queryResponse } = props;
-  return(
+  return (
     <div className="results-div">
       <h3>Results:</h3>
       <div className="results-view">
@@ -13,7 +14,7 @@ const QueryResults = (props) => {
         </pre>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default QueryResults;

@@ -1,12 +1,19 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-use-before-define */
 /**
- normalizeForCache traverses server response data and creates objects out of responses for cache. Furthermore, it identifies fields that are 'object types' then replaces those array elements with references (helper), creates separate normalized objectes out of replaced elements, and saves all to cache (helper) with unique identifiers (helper)
+ normalizeForCache traverses server response data and creates objects out
+  of responses for cache. Furthermore, it identifies fields that are 'object
+   types' then replaces those array elements with references (helper), creates
+    separate normalized objectes out of replaced elements, and saves all to cache
+     (helper) with unique identifiers (helper)
  */
 
 function normalizeForCache(response, map, fieldsMap) {
   // Name of query for ID generation (e.g. "countries")
   const queryName = Object.keys(response)[0];
   // Object type for ID generation
-  const collectionName = map[queryName]
+  const collectionName = map[queryName];
   // Array of objects on the response (cloned version)
   const collection = JSON.parse(JSON.stringify(response[queryName]));
 
@@ -26,8 +33,7 @@ function normalizeForCache(response, map, fieldsMap) {
   }
   // Write the array of references to cache (e.g. 'City': ['City-1', 'City-2', 'City-3'...])
   writeToCache(collectionName, referencesToCache);
-};
-
+}
 
 // ============= HELPER FUNCTIONS ============= //
 
@@ -42,13 +48,13 @@ function replaceItemsWithReferences(field, array, fieldsMap) {
   }
 
   return arrayOfReferences;
-};
+}
 
-// Creates unique ID (key) for cached item 
+// Creates unique ID (key) for cached item
 function generateId(collection, item) {
   const identifier = item.id || item._id || 'uncacheable';
-  return collection + '-' + identifier.toString();
-};
+  return `${collection}-${identifier.toString()}`;
+}
 
 // Saves item/s to cache and omits any 'uncacheable' items
 function writeToCache(key, item) {
@@ -56,6 +62,6 @@ function writeToCache(key, item) {
     sessionStorage.setItem(key, JSON.stringify(item));
     // mockCache[key] = JSON.stringify(item);
   }
-};
+}
 
 module.exports = normalizeForCache;

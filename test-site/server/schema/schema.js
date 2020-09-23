@@ -1,12 +1,14 @@
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-unused-vars */
+const {
+  GraphQLSchema,
+  GraphQLObjectType,
+  GraphQLList,
+  GraphQLID,
+  GraphQLString,
+  GraphQLInt,
+} = require('graphql');
 const db = require('../models/countriesModel');
-
-const { 
-  GraphQLSchema, 
-  GraphQLObjectType, 
-  GraphQLList, 
-  GraphQLID, 
-  GraphQLString, 
-  GraphQLInt } = require('graphql');
 
 // =========================== //
 // ===== TYPE DEFINITIONS ==== //
@@ -26,12 +28,12 @@ const CountryType = new GraphQLObjectType({
       type: new GraphQLList(CityType),
       async resolve(parent, args) {
         const citiesList = await db.query(`
-          SELECT * FROM cities WHERE country_id = $1`, [Number(parent.id)]) 
-        
-        return citiesList.rows
-      }
-    }
-  })
+          SELECT * FROM cities WHERE country_id = $1`, [Number(parent.id)]);
+
+        return citiesList.rows;
+      },
+    },
+  }),
 });
 
 const CityType = new GraphQLObjectType({
@@ -40,8 +42,8 @@ const CityType = new GraphQLObjectType({
     country_id: { type: GraphQLString },
     id: { type: GraphQLID },
     name: { type: GraphQLString },
-    population: { type: GraphQLInt }
-  })
+    population: { type: GraphQLInt },
+  }),
 });
 
 // ADD LANGUAGES TYPE HERE
@@ -60,9 +62,9 @@ const RootQuery = new GraphQLObjectType({
       async resolve(parent, args) {
         const country = await db.query(`
           SELECT * FROM countries WHERE id = $1`, [Number(args.id)]);
-        
+
         return country.rows[0];
-      }
+      },
     },
     // GET ALL COUNTRIES
     countries: {
@@ -71,9 +73,9 @@ const RootQuery = new GraphQLObjectType({
         const countriesFromDB = await db.query(`
           SELECT * FROM countries
           `);
-  
+
         return countriesFromDB.rows;
-      }
+      },
     },
     // GET ALL CITIES IN A COUNTRY
     citiesByCountry: {
@@ -84,7 +86,7 @@ const RootQuery = new GraphQLObjectType({
           SELECT * FROM cities WHERE country_id = $1`, [Number(args.country_id)]); // need to dynamically resolve this
 
         return citiesList.rows;
-      }
+      },
     },
     // GET ALL CITIES
     cities: {
@@ -92,11 +94,11 @@ const RootQuery = new GraphQLObjectType({
       async resolve(parent, args) {
         const citiesList = await db.query(`
           SELECT * FROM cities`);
-        
+
         return citiesList.rows;
-      }
-    }
-  }
+      },
+    },
+  },
 });
 
 // imported into server.js

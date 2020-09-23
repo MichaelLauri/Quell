@@ -1,6 +1,12 @@
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable react/button-has-type */
+/* eslint-disable consistent-return */
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect, useRef } from 'react';
-import QueryField from './QueryField.jsx';
-import DropdownItem from './DropdownItem.jsx';
+import QueryField from './QueryField';
+import DropdownItem from './DropdownItem';
 // imported images
 import Minus from '../images/buttons/minus-button.svg';
 import MinusHover from '../images/buttons/minus-button-hover.svg';
@@ -14,13 +20,15 @@ import PlusHover from '../images/buttons/plus-button-hover.svg';
 */
 
 const QueryFields = (props) => {
-
-  const { initialQuery: initialField, type, sub, outputFunction } = props; // import props
+  const {
+    initialQuery: initialField, type, sub, outputFunction,
+  } = props; // import props
 
   const [queryList, setQueryList] = useState(initialField);
   const [availableList, setAvailableList] = useState([]);
   const [plusDropdown, togglePlusDropdown] = useState(false);
-  const [subQuery, setSubQuery] = useState(sub); // is true when we render this recursively for the "cities" field inside "countries" query
+  // is true when we render this recursively for the "cities" field inside "countries" query
+  const [subQuery, setSubQuery] = useState(sub);
 
   // ====================================================================== //
   // ======= Functionality to close dropdowns when clicking outside ======= //
@@ -33,7 +41,7 @@ const QueryFields = (props) => {
   const handleClickOutside = (event) => {
     if (ref.current && !ref.current.contains(event.target)) {
       togglePlusDropdown(false);
-    };
+    }
   };
 
   // listens for clicks on the body of the dom
@@ -42,7 +50,7 @@ const QueryFields = (props) => {
     return () => {
       document.removeEventListener('click', handleClickOutside, true);
     };
-  }, [])
+  }, []);
 
   // ========================================================== //
   // ======= Functionality to initialize dropdowns, etc ======= //
@@ -56,16 +64,16 @@ const QueryFields = (props) => {
   // ====== Lists of Fields ====== //
 
   const cityFields = [
-    { country_id: "string" },
+    { country_id: 'string' },
     // { id: "string" }, // commented out because we're making it an immutable field
-    { name: "string" },
-    { population: "string" },
+    { name: 'string' },
+    { population: 'string' },
   ];
 
   const countryFields = [
     // { id: "string" },
-    { name: "string" },
-    { capital: "string" },
+    { name: 'string' },
+    { capital: 'string' },
     { cities: cityFields }, // if field is array, point to the list of fields
   ];
 
@@ -78,7 +86,7 @@ const QueryFields = (props) => {
   // Takes the items list and returns something like: [ id, name, capital, cities ]
   const convertIntoList = (itemList) => {
     const output = itemList.map((obj) => { // creates array based on keys of objects in fields array
-      let key = Object.keys(obj)[0];
+      const key = Object.keys(obj)[0];
       return key;
     });
     const noDuplicates = []; // get rid of potential duplicates
@@ -94,7 +102,7 @@ const QueryFields = (props) => {
   // ======= Buttons Functionality ====== //
   // ==================================== //
 
-  //======= Minus button ========//
+  //= ====== Minus button ========//
   function deleteItem(item) {
     // remove item from queryList
     const newList = [...queryList];
@@ -113,7 +121,7 @@ const QueryFields = (props) => {
     }
   }
 
-  //======= Plus button ========//
+  //= ====== Plus button ========//
   function addItem(item) {
     // add item to queryList
     const newList = [...queryList];
@@ -137,7 +145,7 @@ const QueryFields = (props) => {
   // Fires when you click plus -- only show plus dropdown if there's something in the list
   const dropPlus = () => {
     if (availableList.length > 0) {
-      togglePlusDropdown(!plusDropdown)
+      togglePlusDropdown(!plusDropdown);
     }
   };
 
@@ -146,38 +154,42 @@ const QueryFields = (props) => {
   // =========================== //
 
   // prepare some characters
-  const ob = '{',
-    cb = '}',
-    tab = <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>,
-    space = <span>&nbsp;</span>;
+  const ob = '{';
+  const cb = '}';
+  const tab = <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>;
+  const space = <span>&nbsp;</span>;
 
   // Render the query list to the DOM
   const queriedItems = queryList.map((item, i) => {
-    // if querying "cities", need to open up a new pair of brackets and recursively call QueryFields to generate cities fields
+    // if querying "cities", need to open up a new pair of brackets
+    // and recursively call QueryFields to generate cities fields
     if (item === 'cities') {
       return (
         <>
-          <div className='queryLine'>
+          <div className="queryLine">
             {tab}
             {tab}
-            <button className='minus-button' onClick={() => deleteItem(item)}>
-              <div className='plus-minus-icons'>
-                <img src={Minus} />
-                <img src={MinusHover} className='hover-button' />
+            <button className="minus-button" onClick={() => deleteItem(item)}>
+              <div className="plus-minus-icons">
+                <img src={Minus} alt="plus button" />
+                <img src={MinusHover} alt="plus button" className=" hover-button" />
               </div>
             </button>
-            {space}cities{space}{ob} 
+            {space}
+            cities
+            {space}
+            {ob}
           </div>
-          <div className='queryLine'>
+          <div className="queryLine">
             <QueryFields
               initialQuery={['id']}
-              type={'City'}
+              type="City"
               outputFunction={outputFunction}
               key={type}
-              sub={true}
+              sub
             />
           </div>
-          <div className='queryLine'>
+          <div className="queryLine">
             {tab}
             {tab}
             {cb}
@@ -197,31 +209,30 @@ const QueryFields = (props) => {
   });
 
   // Render dropdown menu from the available list
-  const dropdown = availableList.map((item, i) => {
-    return (
-      <DropdownItem func={addItem} item={item} key={`Available${type}${i}`} />
-    );
-  });
+  const dropdown = availableList.map((item, i) => (
+    <DropdownItem func={addItem} item={item} key={`Available${type}${i}`} />
+  ));
 
-  // note: the "sub" tags are conditionally rendered only when we're in the cities field INSIDE the countries query
+  // note: the "sub" tags are conditionally rendered only
+  // when we're in the cities field INSIDE the countries query
   return (
     <>
       {/* List all the chosen query fields */}
-      <div className='queryLinesContainer'>{queriedItems}</div>
+      <div className="queryLinesContainer">{queriedItems}</div>
 
       {tab}
       {tab}
       {sub && <>{tab}</>}
       {/* Render plus sign, which opens a dropdown */}
       <button
-        className='plus-button'
+        className="plus-button"
         onClick={dropPlus}
       >
-        <div className='plus-minus-icons'>
-          <img src={Plus} />
-          <img src={PlusHover} className='hover-button' />
+        <div className="plus-minus-icons">
+          <img src={Plus} alt="plus button" />
+          <img src={PlusHover} alt="plus button" className="hover-button" />
         </div>
-        {plusDropdown && <div className='dropdown-menu' ref={ref}>{dropdown}</div>}
+        {plusDropdown && <div className="dropdown-menu" ref={ref}>{dropdown}</div>}
       </button>
     </>
   );

@@ -1,15 +1,16 @@
+/* eslint-disable no-unused-vars */
 const express = require('express');
 const path = require('path');
+const { graphqlHTTP } = require('express-graphql');
 const schema = require('./schema/schema');
-const {graphqlHTTP} = require('express-graphql')
 // const { quell } = require('./controllers/quellController');
-const QuellCache = require('../../quell-server/src/quell')
+const QuellCache = require('../../quell-server/src/quell');
+
 const app = express();
 // const PORT = process.env.PORT || 3000;
 const PORT = 3000;
 
 const quellCache = new QuellCache(schema, 6379, 600);
-
 
 // JSON parser:
 app.use(express.json());
@@ -19,41 +20,32 @@ if (process.env.NODE_ENV === 'production') {
   // statically serve everything in the dist folder on the route
   app.use('/dist', express.static(path.resolve(__dirname, '../dist')));
   // serve index.html on the route '/'
-  app.get('/', (req, res) => {
-    return res
-      .status(200)
-      .sendFile(path.resolve(__dirname, '../client/src/index.html'));
-  });
+  app.get('/', (req, res) => res
+    .status(200)
+    .sendFile(path.resolve(__dirname, '../client/src/index.html')));
 }
 
 // just putting this here for access to the graphiql playground
 app.use('/g', graphqlHTTP({
-  schema: schema,
-  graphiql: true
+  schema,
+  graphiql: true,
 }));
 
-
 // route that triggers the flushall function to clear the Redis cache
-app.get('/clearCache', quellCache.clearCache, (req, res) => {
-  return res.status(200).send('Redis cache successfully cleared');
-})
+app.get('/clearCache', quellCache.clearCache, (req, res) => res.status(200).send('Redis cache successfully cleared'));
 
 // GraphQL route
 // app.use('/graphql', quell(schema), (req, res) => {
 //   res.status(200).send(res.locals.value);
 // });
-app.use('/graphql', 
+app.use('/graphql',
   quellCache.query,
-  (req, res) => {
-    return res
-      .status(200)
-      .send(res.locals.queryResponse);
-  });
+  (req, res) => res
+    .status(200)
+    .send(res.locals.queryResponse));
 
 // catch-all endpoint handler
-app.use((req, res) => {
-  return res.status(400).send('Page not found.');
-});
+app.use((req, res) => res.status(400).send('Page not found.'));
 
 // global error handler
 app.use((err, req, res, next) => {
@@ -68,7 +60,7 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () => {
-  console.log('Magic happening on ' + PORT);
+  console.log(`Magic happening on ${PORT}`);
 });
 
 module.exports = app;

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import React, { useState } from 'react';
 import Query from './Query';
 import DemoButton from '../components/DemoButton';
@@ -5,7 +6,7 @@ import QueryResults from '../components/QueryResults';
 import Metrics from '../components/Metrics';
 import Graph from '../components/Graph';
 import Quell from '../../../../quell-client/Quellify';
-import { CreateQueryStr } from '../helper-functions/HelperFunctions.js';
+import { CreateQueryStr } from '../helper-functions/HelperFunctions';
 import Header from '../images/headers/QUELL-headers-demo w lines.svg';
 
 /*
@@ -20,22 +21,23 @@ const Demo = () => {
   const [output, setOutput] = useState({ countries: ['id'] });
   const [resetComponent, setResetComponent] = useState(false);
 
-  const formatTimer = (time) => {
-    return time.toFixed(2) + ' ms';
-  };
+  const formatTimer = (time) => `${time.toFixed(2)} ms`;
 
   // ============================================================== //
   // === Function that makes the fetch request to run the query === //
   // ============================================================== //
 
   const handleRunQueryClick = () => {
-
-    // Need to run the output state component through a parser that actually formats it like a graphQL query
+    // Need to run the output state component through
+    // a parser that actually formats it like a graphQL query
     const parsedResult = CreateQueryStr(output);
-    // console.log('Input when you "Run Query":', parsedResult); // --> uncomment if you want to check the actual input we are running
+    // console.log('Input when you "Run Query":',
+    // parsedResult); // --> uncomment if you want to check the actual input we are running
 
     // start the timer (eventually displayed in Metrics)
-    let startTime, endTime;
+    let startTime; let
+      endTime;
+    // eslint-disable-next-line prefer-const
     startTime = performance.now();
 
     // Make the fetch request
@@ -48,7 +50,7 @@ const Demo = () => {
         citiesByCountryId: 'City',
         cities: 'City',
       },
-      { cities: 'City' }
+      { cities: 'City' },
     )
       .then((res) => {
         endTime = performance.now(); // stop the timer
@@ -66,6 +68,7 @@ const Demo = () => {
         const newTime = Number(rawTime.toFixed(3));
         setFetchTimeIntegers([...fetchTimeIntegers, newTime]);
       })
+      // eslint-disable-next-line no-console
       .catch((err) => console.log(err));
   };
 
@@ -76,7 +79,7 @@ const Demo = () => {
     // Clear sessionStorage
     sessionStorage.clear();
     // Time cleared
-    let date = new Date();
+    const date = new Date();
     setCacheStatus(date.toLocaleTimeString());
     // Zero-out line graph
     setFetchTimeIntegers([0, 0]);
@@ -101,23 +104,37 @@ const Demo = () => {
   };
 
   return (
-    <div id='demo'>
-      <div id='demo-header-container'>
-        <img id='demo-header' src={Header}></img>
+    <div id="demo">
+      <div id="demo-header-container">
+        <img id="demo-header" alt="demo" src={Header} />
       </div>
-      <div className='demo-inst-container'>
-        <p className='demo-inst'>It's time to take Quell for a spin!</p>
-        <br></br>
-        <p className='demo-inst'>
+      <div className="demo-inst-container">
+        <p className="demo-inst">It's time to take Quell for a spin!</p>
+        <br />
+        <p className="demo-inst">
           Below is a sample GraphQL query that you can manipulate using the
-          drop-down, plus, and minus buttons. Click <em>Run Query</em> to
+          drop-down, plus, and minus buttons. Click
+          {' '}
+          <em>Run Query</em>
+          {' '}
+          to
           initiate the request/response cycle. To clear the client-side cache,
-          click <em>Clear Session Cache</em> or alternatively clear the
-          server-side cache by clicking <em>Clear Server Cache</em>.{' '}
-          <em>Reset All</em> will take you back to square one.
+          click
+          {' '}
+          <em>Clear Session Cache</em>
+          {' '}
+          or alternatively clear the
+          server-side cache by clicking
+          {' '}
+          <em>Clear Server Cache</em>
+          .
+          {' '}
+          <em>Reset All</em>
+          {' '}
+          will take you back to square one.
         </p>
-        <br></br>
-        <p className='demo-inst'>
+        <br />
+        <p className="demo-inst">
           <em>Suggestions:</em>
         </p>
         <ul>
@@ -141,31 +158,34 @@ const Demo = () => {
         </ul>
       </div>
 
-      <div className='dashboard-grid'>
-        <div className='button-grid'> 
-        {/* All of the buttons at the top of the demo */}
+      <div className="dashboard-grid">
+        <div className="button-grid">
+          {/* All of the buttons at the top of the demo */}
           <DemoButton
-            text={'Run Query'}
+            text="Run Query"
             func={handleRunQueryClick}
-            classname={'button-query button-query-primary'}
+            classname="button-query button-query-primary"
           />
           <DemoButton
-            text={'Clear Session Cache'}
+            text="Clear Session Cache"
             func={handleClearCacheClick}
-            classname={'button-query button-query-secondary'}
+            classname="button-query button-query-secondary"
           />
           <DemoButton
-            text={'Clear Server Cache'}
+            text="Clear Server Cache"
             func={handleClearCacheClick}
-            classname={'button-query button-query-secondary'}
+            classname="button-query button-query-secondary"
           />
           <DemoButton
-            text={'Reset All'}
+            text="Reset All"
             func={handleResetAll}
-            classname={'button-query button-query-secondary'}
+            classname="button-query button-query-secondary"
           />
         </div>
-        <Query output={output} key={resetComponent} setOutput={setOutput} /> {/* The key prop makes it so that when component changes, it completely reloads -- useful when clicking "Reset All" */}
+        <Query output={output} key={resetComponent} setOutput={setOutput} />
+        {' '}
+        {/* The key prop makes it so that when component changes,
+         it completely reloads -- useful when clicking "Reset All" */}
         <Metrics fetchTime={fetchTime} cacheStatus={cacheStatus} />
         <QueryResults queryResponse={queryResponse} />
         <Graph fetchTimeIntegers={fetchTimeIntegers} />

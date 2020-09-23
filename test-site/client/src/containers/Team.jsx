@@ -1,12 +1,12 @@
 import React from 'react';
-import TeamMember from '../components/TeamMember.jsx';
+import TeamMember from '../components/TeamMember';
 import Header from '../images/headers/QUELL-team quell-2color_1.svg';
 import Justin from '../images/profile_pics/QUELL-headshot w border-Justin.svg';
 import Mike from '../images/profile_pics/QUELL-headshot w border-Mike.svg';
 import Nick from '../images/profile_pics/QUELL-headshot w border-Nick.svg';
 import Rob from '../images/profile_pics/QUELL-headshot w border-Rob.svg';
 
-/* 
+/*
   Component to generate each teams section
 */
 
@@ -46,11 +46,10 @@ const rob = {
   github: 'https://github.com/RobNobile',
 };
 
-const Team = () => {
-  return (
-    <>
-    <img id='team-quell' src={Header}></img>
-    <div id='team'>
+const Team = () => (
+  <>
+    <img id="team-quell" src={Header} alt="Team Quell" />
+    <div id="team">
       <TeamMember
         src={nick.src}
         bio={nick.bio}
@@ -80,8 +79,7 @@ const Team = () => {
         github={justin.github}
       />
     </div>
-    </>
-  );
-};
+  </>
+);
 
 export default Team;

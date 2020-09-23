@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import Trend from 'react-trend';
 
@@ -8,7 +9,7 @@ import Trend from 'react-trend';
 const Graph = (props) => {
   const { fetchTimeIntegers } = props;
 
-  return(
+  return (
     <div className="graph-div">
       <h3>Speed Graph:</h3>
       <Trend
@@ -17,10 +18,10 @@ const Graph = (props) => {
         gradient={['#1feaea', '#ffd200', '#f72047']}
         radius={0.9}
         strokeWidth={3.2}
-        strokeLinecap={'round'}
+        strokeLinecap="round"
       />
     </div>
-  )
-}
+  );
+};
 
 export default Graph;
